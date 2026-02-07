@@ -4,13 +4,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Sandeep Pandit - DevOps Engineer with 5+ years of experience in AWS, Kubernetes, Terraform, and CI/CD automation.">
+    <meta name="keywords" content="DevOps, AWS, Kubernetes, Terraform, CI/CD, Docker, Cloud Engineer">
+    <meta name="author" content="Sandeep Pandit">
     <title>Sandeep Pandit | DevOps Engineer</title>
+
+    <!-- Preload Critical Resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
     <!-- CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
+
+    <!-- Favicon (optional - add your own) -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
 </head>
 
 <body>
+    <!-- Page Loader -->
+    <div class="page-loader">
+        <div class="loader-spinner"></div>
+    </div>
 
     <!-- Nav -->
     <nav class="navbar">
@@ -27,7 +45,7 @@
 
     <!-- Hero -->
     <section class="hero-section">
-        <canvas id="canvas-container" style="position:absolute; inset:0; z-index:1; opacity:0.4;"></canvas>
+        <canvas id="canvas-container" style="position:absolute; inset:0; z-index:1; opacity:0.6;"></canvas>
         <div class="hero-content">
             <h1 class="hero-title reveal-text">DevOps <br>Engineer.</h1>
             <p class="hero-desc reveal-text">
@@ -62,10 +80,11 @@
                 </p>
                 <br><br>
 
-                <!-- Education Block (New) -->
+                <!-- Education Block -->
                 <div class="gs-reveal"
-                    style="margin-bottom: 3rem; border-left: 3px solid var(--c-accent); padding-left: 1.5rem;">
-                    <h4 style="font-size:1.2rem; margin-bottom:0.5rem;">Bachelor of Technology — Computer Science</h4>
+                    style="margin-bottom: 3rem; border-left: 3px solid transparent; border-image: linear-gradient(180deg, #667eea, #f97316) 1; padding-left: 1.5rem;">
+                    <h4 style="font-size:1.2rem; margin-bottom:0.5rem; color: var(--c-text);">Bachelor of Technology —
+                        Computer Science</h4>
                     <p style="color:var(--c-text); font-weight:600;">Maharishi Markandeshwar University, Haryana</p>
                     <p style="color:var(--c-text-sec);">2016 – 2020 • CGPA: 8.5 / 10</p>
                 </div>
@@ -79,7 +98,7 @@
                     </div>
 
                     <div class="bento-card gs-reveal">
-                        <div class="bento-icon"><i class="fas fa-sync" style="color:#0066cc"></i></div>
+                        <div class="bento-icon"><i class="fas fa-sync" style="color:#00d4ff"></i></div>
                         <h3 class="bento-title">CI/CD & Automation</h3>
                         <p class="bento-text">Jenkins, GitHub Actions, GitFlow, GitOps</p>
                     </div>
@@ -91,19 +110,19 @@
                     </div>
 
                     <div class="bento-card gs-reveal">
-                        <div class="bento-icon"><i class="fas fa-code" style="color:#7B42BC"></i></div>
+                        <div class="bento-icon"><i class="fas fa-code" style="color:#764ba2"></i></div>
                         <h3 class="bento-title">IaC & Scripting</h3>
                         <p class="bento-text">Terraform, Bash, Shell Scripting, Python</p>
                     </div>
 
                     <div class="bento-card gs-reveal">
-                        <div class="bento-icon"><i class="fas fa-shield-alt" style="color:#2ecc71"></i></div>
+                        <div class="bento-icon"><i class="fas fa-shield-alt" style="color:#00ff88"></i></div>
                         <h3 class="bento-title">Security & Observability</h3>
                         <p class="bento-text">DevSecOps, IAM, MFA, Trivy, SonarQube</p>
                     </div>
 
                     <div class="bento-card gs-reveal">
-                        <div class="bento-icon"><i class="fas fa-database" style="color:#e74c3c"></i></div>
+                        <div class="bento-icon"><i class="fas fa-database" style="color:#f97316"></i></div>
                         <h3 class="bento-title">Data & OS</h3>
                         <p class="bento-text">Oracle, Amazon RDS, Linux (RHEL, Ubuntu, Amazon Linux)</p>
                     </div>
@@ -136,7 +155,6 @@
                         <li>Integrated container vulnerability scanning (DevSecOps) into pipelines.</li>
                         <li>Implemented IAM least-privilege access and MFA, improving security posture.</li>
                         <li>Optimized AWS cloud costs by 18–25% through rightsizing and cleanup.</li>
-                        <li>Improved incident response time by 25% using centralized logging/monitoring.</li>
                         <li>Automated operational tasks using Shell/Bash, saving 10+ hours per week.</li>
                     </ul>
                 </div>
@@ -147,7 +165,7 @@
                     <span class="job-company">Tata Consultancy Services (TCS) • Jan 2021 – Jan 2023</span>
                     <ul class="job-details">
                         <li>Managed Git/GitHub repositories using version control standards and GitFlow.</li>
-                        <li>Enhanced Jenkins pipelines with automated build, test, and deployment stages.
+                        <li>Enhanced Jenkins pipelines with automated build, test, and deployment stages.</li>
                         <li>Containerized legacy applications using Docker, improving deployment stability by 15%.</li>
                         <li>Created and maintained CI/CD and deployment documentation in Confluence.</li>
                     </ul>
@@ -165,16 +183,17 @@
                 <!-- P1 -->
                 <div class="project-card gs-reveal">
                     <div class="project-img">
-                        <img src="images/eks_atlas.png" alt="EKS">
+                        <img src="images/eks_atlas.png" alt="EKS Atlas - AWS EKS Cluster Automation">
                     </div>
                     <div class="project-content">
                         <div class="project-cat">AWS EKS Cluster Automation</div>
                         <h3 class="project-title">EKSAtlas</h3>
                         <p class="project-desc">Automated provisioning of Amazon EKS clusters using modular Terraform
                             IaC. Implemented remote state management using S3 and DynamoDB.</p>
-                        <div class="bento-tags" style="margin-top:1rem;">
-                            <span class="tag">AWS</span><span class="tag">Terraform</span><span
-                                class="tag">Kubernetes</span>
+                        <div class="bento-tags">
+                            <span class="tag">AWS</span>
+                            <span class="tag">Terraform</span>
+                            <span class="tag">Kubernetes</span>
                         </div>
                     </div>
                 </div>
@@ -186,28 +205,31 @@
                         <h3 class="project-title">CloudSculptor</h3>
                         <p class="project-desc">Developed reusable Terraform modules for AWS networking and compute
                             resources. Supported multi-environment deployments using variables and workspaces.</p>
-                        <div class="bento-tags" style="margin-top:1rem;">
-                            <span class="tag">Modules</span><span class="tag">IaC</span><span
-                                class="tag">AutoScaling</span>
+                        <div class="bento-tags">
+                            <span class="tag">Modules</span>
+                            <span class="tag">IaC</span>
+                            <span class="tag">AutoScaling</span>
                         </div>
                     </div>
                     <div class="project-img">
-                        <img src="images/cloud_sculptor.png" alt="Cloud">
+                        <img src="images/cloud_sculptor.png" alt="CloudSculptor - AWS Infrastructure Automation">
                     </div>
                 </div>
 
                 <!-- P3 -->
                 <div class="project-card gs-reveal">
                     <div class="project-img">
-                        <img src="images/cicd_pipeline.png" alt="CI/CD">
+                        <img src="images/cicd_pipeline.png" alt="K8s Pipeline - End-to-End Kubernetes CI/CD">
                     </div>
                     <div class="project-content">
                         <div class="project-cat">End-to-End Kubernetes CI/CD</div>
                         <h3 class="project-title">K8s Pipeline</h3>
                         <p class="project-desc">Built CI/CD pipelines for Kubernetes workloads with automated build,
                             test, security scanning, and deployment.</p>
-                        <div class="bento-tags" style="margin-top:1rem;">
-                            <span class="tag">Jenkins</span><span class="tag">Docker</span><span class="tag">Helm</span>
+                        <div class="bento-tags">
+                            <span class="tag">Jenkins</span>
+                            <span class="tag">Docker</span>
+                            <span class="tag">Helm</span>
                         </div>
                     </div>
                 </div>
@@ -215,29 +237,33 @@
         </div>
     </section>
 
-    <!-- Certification Section (New) -->
+    <!-- Certification Section -->
     <section class="section" style="padding-top:0;">
         <div class="container gs-reveal">
-            <h3 class="section-title" style="font-size:3rem; margin-bottom: 2rem;">Certifications.</h3>
+            <h3 class="section-title" style="font-size:clamp(2rem, 5vw, 3rem); margin-bottom: 2rem;">Certifications.
+            </h3>
             <div class="bento-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
                 <div class="bento-card" style="padding: 1.5rem; display:flex; gap:1rem; align-items:center;">
-                    <div class="bento-icon" style="margin:0; font-size:1.5rem;"><i class="fas fa-award"></i></div>
+                    <div class="bento-icon" style="margin:0; font-size:1.8rem;"><i class="fas fa-award"
+                            style="color:#764ba2;"></i></div>
                     <div>
-                        <h4 style="font-size:1.1rem; margin:0;">Terraform Associate</h4>
+                        <h4 style="font-size:1.1rem; margin:0; color:var(--c-text);">Terraform Associate</h4>
                         <span style="color:var(--c-text-sec); font-size:0.9rem;">HashiCorp Certified</span>
                     </div>
                 </div>
                 <div class="bento-card" style="padding: 1.5rem; display:flex; gap:1rem; align-items:center;">
-                    <div class="bento-icon" style="margin:0; font-size:1.5rem;"><i class="fas fa-shield-alt"></i></div>
+                    <div class="bento-icon" style="margin:0; font-size:1.8rem;"><i class="fas fa-shield-alt"
+                            style="color:#00ff88;"></i></div>
                     <div>
-                        <h4 style="font-size:1.1rem; margin:0;">DevSecOps Actions</h4>
+                        <h4 style="font-size:1.1rem; margin:0; color:var(--c-text);">DevSecOps Actions</h4>
                         <span style="color:var(--c-text-sec); font-size:0.9rem;">GitHub Actions</span>
                     </div>
                 </div>
                 <div class="bento-card" style="padding: 1.5rem; display:flex; gap:1rem; align-items:center;">
-                    <div class="bento-icon" style="margin:0; font-size:1.5rem;"><i class="fab fa-aws"></i></div>
+                    <div class="bento-icon" style="margin:0; font-size:1.8rem;"><i class="fab fa-aws"
+                            style="color:#FF9900;"></i></div>
                     <div>
-                        <h4 style="font-size:1.1rem; margin:0;">Cloud Practitioner</h4>
+                        <h4 style="font-size:1.1rem; margin:0; color:var(--c-text);">Cloud Practitioner</h4>
                         <span style="color:var(--c-text-sec); font-size:0.9rem;">AWS Certified</span>
                     </div>
                 </div>
@@ -246,26 +272,32 @@
     </section>
 
     <!-- Contact -->
-    <section id="contact" class="section" style="background:#f5f5f7; text-align:center;">
+    <section id="contact" class="section">
         <div class="container hero-content">
-            <h2 class="section-title gs-reveal">Let’s interface.</h2>
+            <h2 class="section-title gs-reveal">Let's interface.</h2>
             <div class="gs-reveal" style="display:flex; flex-direction:column; gap:1rem; margin-bottom:2rem;">
-                <a href="mailto:24panditsandeep@gmail.com" class="btn-link"
-                    style="justify-content:center; font-size:1.5rem;">24panditsandeep@gmail.com</a>
+                <a href="mailto:24panditsandeep@gmail.com" class="btn-link">24panditsandeep@gmail.com</a>
                 <p style="color:var(--c-text-sec);">Gurugram, Haryana</p>
             </div>
-            <div class="gs-reveal" style="display:flex; justify-content:center; gap: 1rem;">
-                <a href="https://www.linkedin.com/in/sandeep-pandit-540b32150/" class="btn btn-primary"><i
-                        class="fab fa-linkedin"></i>
-                    LinkedIn</a>
+            <div class="gs-reveal" style="display:flex; justify-content:center; gap: 1rem; flex-wrap:wrap;">
+                <a href="https://www.linkedin.com/in/sandeep-pandit-540b32150/" class="btn btn-primary" target="_blank"
+                    rel="noopener noreferrer">
+                    <i class="fab fa-linkedin"></i> LinkedIn
+                </a>
             </div>
         </div>
     </section>
+
+    <!-- Footer -->
+    <footer style="padding: 2rem; text-align: center; color: var(--c-text-muted); font-size: 0.9rem;">
+        <p>© 2026 Sandeep Pandit. Crafted with passion.</p>
+    </footer>
 
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
     <script src="js/script.js"></script>
 </body>
 
