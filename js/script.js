@@ -1,15 +1,13 @@
 // ═══════════════════════════════════════════════════════════════════════════
-// PREMIUM PORTFOLIO — Advanced Animations & Effects
-// Features: GSAP ScrollTrigger, Three.js Particle Network, Cursor Glow,
-//           Magnetic Buttons, Smooth Page Transitions
+// PREMIUM PORTFOLIO — High-Impact Animations + Optimized Performance
+// Best of both worlds: jaw-dropping visuals with efficient rendering
 // ═══════════════════════════════════════════════════════════════════════════
 
 document.addEventListener("DOMContentLoaded", () => {
-    // Register GSAP Plugins
     gsap.registerPlugin(ScrollTrigger);
-    
-    // Initialize all effects
+
     initPageLoader();
+    initMobileNav();
     initCursorGlow();
     initHeroAnimations();
     initScrollAnimations();
@@ -18,439 +16,425 @@ document.addEventListener("DOMContentLoaded", () => {
     initMagneticButtons();
     initParallaxEffects();
     initTextReveal();
+    initCardTilt();
 });
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Page Loader
+// Mobile Navigation Toggle
+// ═══════════════════════════════════════════════════════════════════════════
+function initMobileNav() {
+    const toggle = document.querySelector('.nav-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    if (!toggle || !navLinks) return;
+
+    toggle.addEventListener('click', () => {
+        const isOpen = toggle.classList.toggle('active');
+        navLinks.classList.toggle('active');
+        toggle.setAttribute('aria-expanded', isOpen);
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+    });
+
+    // Close menu when a link is clicked
+    navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            toggle.classList.remove('active');
+            navLinks.classList.remove('active');
+            toggle.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = '';
+        });
+    });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Page Loader — cinematic reveal
 // ═══════════════════════════════════════════════════════════════════════════
 function initPageLoader() {
     const loader = document.querySelector('.page-loader');
-    if (loader) {
-        window.addEventListener('load', () => {
-            gsap.to(loader, {
-                opacity: 0,
-                duration: 0.8,
-                ease: "power2.out",
-                onComplete: () => {
-                    loader.style.display = 'none';
-                    document.body.style.overflow = 'auto';
-                }
-            });
-        });
+    if (!loader) return;
+
+    if (document.readyState === 'complete') {
+        loader.style.display = 'none';
+        return;
     }
+
+    window.addEventListener('load', () => {
+        const tl = gsap.timeline();
+        tl.to('.loader-spinner', { scale: 0.8, opacity: 0, duration: 0.3, ease: "power2.in" })
+          .to(loader, {
+              opacity: 0,
+              duration: 0.5,
+              ease: "power2.out",
+              onComplete: () => { loader.style.display = 'none'; }
+          }, "-=0.1");
+    });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Cursor Glow Effect (Desktop Only)
+// Cursor Glow — GPU-accelerated, interactive sizing
 // ═══════════════════════════════════════════════════════════════════════════
 function initCursorGlow() {
-    if (window.matchMedia("(pointer: fine)").matches) {
-        const cursorGlow = document.createElement('div');
-        cursorGlow.className = 'cursor-glow';
-        document.body.appendChild(cursorGlow);
-        
-        let mouseX = 0, mouseY = 0;
-        let currentX = 0, currentY = 0;
-        
-        document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
+    if (!window.matchMedia("(pointer: fine)").matches) return;
+
+    const glow = document.createElement('div');
+    glow.className = 'cursor-glow';
+    document.body.appendChild(glow);
+
+    let mx = 0, my = 0, cx = 0, cy = 0;
+
+    document.addEventListener('mousemove', e => {
+        mx = e.clientX;
+        my = e.clientY;
+    }, { passive: true });
+
+    document.addEventListener('mouseleave', () => { glow.style.opacity = '0'; });
+    document.addEventListener('mouseenter', () => { glow.style.opacity = '1'; });
+
+    // Enlarge glow on interactive elements
+    document.querySelectorAll('a, button, .btn, .bento-card, .project-card, .tag').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            glow.style.width = '500px';
+            glow.style.height = '500px';
         });
-        
-        function animateCursor() {
-            currentX += (mouseX - currentX) * 0.08;
-            currentY += (mouseY - currentY) * 0.08;
-            cursorGlow.style.left = currentX + 'px';
-            cursorGlow.style.top = currentY + 'px';
-            requestAnimationFrame(animateCursor);
-        }
-        animateCursor();
-        
-        // Hide cursor glow when leaving window
-        document.addEventListener('mouseleave', () => {
-            cursorGlow.style.opacity = '0';
+        el.addEventListener('mouseleave', () => {
+            glow.style.width = '350px';
+            glow.style.height = '350px';
         });
-        document.addEventListener('mouseenter', () => {
-            cursorGlow.style.opacity = '1';
-        });
+    });
+
+    function tick() {
+        cx += (mx - cx) * 0.1;
+        cy += (my - cy) * 0.1;
+        glow.style.transform = `translate3d(${cx - 175}px, ${cy - 175}px, 0)`;
+        requestAnimationFrame(tick);
     }
+    tick();
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Hero Section Animations
+// Hero Animations — cinematic staggered entrance
 // ═══════════════════════════════════════════════════════════════════════════
 function initHeroAnimations() {
     const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
-    
-    // Staggered reveal animation
+
+    // Cinematic staggered reveal
     tl.to(".reveal-text", {
         y: 0,
         opacity: 1,
-        duration: 1.4,
+        duration: 1.2,
         stagger: 0.2,
         ease: "power3.out"
-    });
-    
-    // Add floating animation to hero title
+    })
+    .to(".hero-cta-group .btn", {
+        scale: 1,
+        opacity: 1,
+        duration: 0.6,
+        stagger: 0.15,
+        ease: "back.out(1.7)"
+    }, "-=0.4");
+
+    // Floating title
     gsap.to(".hero-title", {
         y: -10,
         duration: 3,
         repeat: -1,
         yoyo: true,
-        ease: "sine.inOut"
+        ease: "sine.inOut",
+        force3D: true
     });
-    
-    // Continuous gradient animation for hero background
-    gsap.to(".hero-section::before, .hero-section::after", {
-        rotation: 360,
-        duration: 60,
+
+    // Gradient pulse on hero background
+    gsap.to(".hero-section::before", {
+        scale: 1.2,
+        opacity: 0.6,
+        duration: 8,
         repeat: -1,
-        ease: "none"
+        yoyo: true,
+        ease: "sine.inOut"
     });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Scroll-Triggered Animations
+// Scroll Animations — staggered reveals with depth effects
 // ═══════════════════════════════════════════════════════════════════════════
 function initScrollAnimations() {
-    // Fade up animations for all reveal elements
-    gsap.utils.toArray('.gs-reveal').forEach((elem, index) => {
-        gsap.fromTo(elem, 
-            { 
-                y: 60, 
-                opacity: 0,
-                scale: 0.95
-            },
-            {
-                y: 0,
-                opacity: 1,
-                scale: 1,
-                duration: 1,
-                ease: "power3.out",
-                scrollTrigger: {
-                    trigger: elem,
-                    start: "top 88%",
-                    toggleActions: "play none none none"
-                },
-                delay: index * 0.05
-            }
-        );
+    // Generic reveal elements — staggered within each batch
+    ScrollTrigger.batch('.gs-reveal', {
+        start: "top 88%",
+        onEnter: batch => {
+            gsap.fromTo(batch,
+                { y: 50, opacity: 0, scale: 0.96 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    scale: 1,
+                    duration: 0.8,
+                    stagger: 0.1,
+                    ease: "power3.out",
+                    force3D: true,
+                    overwrite: true
+                }
+            );
+        },
+        once: true
     });
-    
-    // Bento cards stagger animation
-    gsap.utils.toArray('.bento-card').forEach((card, index) => {
+
+    // Bento cards — pop in with depth
+    gsap.utils.toArray('.bento-card').forEach((card, i) => {
         gsap.fromTo(card,
-            { 
-                y: 80, 
-                opacity: 0, 
-                rotateX: -15 
-            },
+            { y: 60, opacity: 0, rotateX: -8, scale: 0.95 },
             {
                 y: 0,
                 opacity: 1,
                 rotateX: 0,
-                duration: 0.8,
-                ease: "back.out(1.2)",
-                scrollTrigger: {
-                    trigger: card,
-                    start: "top 90%"
-                },
-                delay: index * 0.1
+                scale: 1,
+                duration: 0.7,
+                ease: "back.out(1.4)",
+                force3D: true,
+                scrollTrigger: { trigger: card, start: "top 90%", once: true },
+                delay: i * 0.08
             }
         );
     });
-    
-    // Project cards slide in
-    gsap.utils.toArray('.project-card').forEach((card, index) => {
-        const direction = index % 2 === 0 ? -100 : 100;
+
+    // Project cards — dramatic slide-in from sides
+    gsap.utils.toArray('.project-card').forEach((card, i) => {
+        const dir = i % 2 === 0 ? -80 : 80;
         gsap.fromTo(card,
-            { 
-                x: direction, 
-                opacity: 0,
-                scale: 0.9
-            },
+            { x: dir, opacity: 0, scale: 0.92, rotateY: dir > 0 ? 5 : -5 },
             {
                 x: 0,
                 opacity: 1,
                 scale: 1,
-                duration: 1.2,
+                rotateY: 0,
+                duration: 1,
                 ease: "power3.out",
-                scrollTrigger: {
-                    trigger: card,
-                    start: "top 85%"
-                }
+                force3D: true,
+                scrollTrigger: { trigger: card, start: "top 85%", once: true }
             }
         );
     });
-    
-    // Job items slide up with stagger
-    gsap.utils.toArray('.job-item').forEach((item, index) => {
+
+    // Job items — slide in with left accent
+    gsap.utils.toArray('.job-item').forEach((item, i) => {
         gsap.fromTo(item,
-            { 
-                y: 60, 
-                opacity: 0,
-                x: -30
-            },
+            { y: 50, opacity: 0, x: -30 },
             {
                 y: 0,
                 opacity: 1,
                 x: 0,
-                duration: 0.9,
+                duration: 0.8,
                 ease: "power2.out",
-                scrollTrigger: {
-                    trigger: item,
-                    start: "top 85%"
-                },
-                delay: index * 0.15
+                force3D: true,
+                scrollTrigger: { trigger: item, start: "top 88%", once: true },
+                delay: i * 0.12
             }
         );
     });
-    
-    // Section titles animation
+
+    // Section titles — dramatic clip-path reveal
     gsap.utils.toArray('.section-title, .sticky-title').forEach(title => {
         gsap.fromTo(title,
-            { 
-                y: 100, 
-                opacity: 0,
-                clipPath: "polygon(0 100%, 100% 100%, 100% 100%, 0 100%)"
-            },
+            { y: 60, opacity: 0, clipPath: "polygon(0 100%, 100% 100%, 100% 100%, 0 100%)" },
             {
                 y: 0,
                 opacity: 1,
                 clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
-                duration: 1.2,
+                duration: 1,
                 ease: "power4.out",
-                scrollTrigger: {
-                    trigger: title,
-                    start: "top 85%"
-                }
+                force3D: true,
+                scrollTrigger: { trigger: title, start: "top 88%", once: true }
             }
         );
     });
-    
-    // Navbar hide/show on scroll
-    let lastScroll = 0;
+
+    // Navbar scroll behavior — throttled with rAF
     const navbar = document.querySelector('.navbar');
-    
+    let lastScroll = 0;
+    let ticking = false;
+
     window.addEventListener('scroll', () => {
-        const currentScroll = window.pageYOffset;
-        
-        if (currentScroll > 100) {
-            navbar.style.background = 'rgba(10, 10, 15, 0.9)';
-            navbar.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.3)';
-        } else {
-            navbar.style.background = 'rgba(255, 255, 255, 0.03)';
-            navbar.style.boxShadow = 'none';
-        }
-        
-        if (currentScroll > lastScroll && currentScroll > 500) {
-            gsap.to(navbar, { y: -100, duration: 0.3 });
-        } else {
-            gsap.to(navbar, { y: 0, duration: 0.3 });
-        }
-        
-        lastScroll = currentScroll;
-    });
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+            const y = window.pageYOffset;
+            if (y > 80) {
+                navbar.classList.add('navbar--scrolled');
+            } else {
+                navbar.classList.remove('navbar--scrolled');
+            }
+            if (y > lastScroll && y > 400) {
+                navbar.classList.add('navbar--hidden');
+            } else {
+                navbar.classList.remove('navbar--hidden');
+            }
+            lastScroll = y;
+            ticking = false;
+        });
+    }, { passive: true });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Three.js Particle Network Background
+// Three.js — Efficient Particle Network (merged geometry)
 // ═══════════════════════════════════════════════════════════════════════════
 function initThreeJS() {
-    const container = document.getElementById('canvas-container');
-    if (!container) return;
-    
+    const canvas = document.getElementById('canvas-container');
+    if (!canvas) return;
+
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ 
-        canvas: container, 
-        alpha: true, 
-        antialias: true 
-    });
-    
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false });
+
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    
-    // Create particle system
-    const particleCount = 150;
-    const positions = new Float32Array(particleCount * 3);
-    const colors = new Float32Array(particleCount * 3);
-    const sizes = new Float32Array(particleCount);
-    
-    const colorPalette = [
-        { r: 0.39, g: 0.4, b: 0.95 },   // Indigo
-        { r: 0.55, g: 0.36, b: 0.97 },  // Violet
-        { r: 0.02, g: 0.71, b: 0.83 },  // Cyan
-        { r: 0.23, g: 0.51, b: 0.96 },  // Blue
-        { r: 0.49, g: 0.24, b: 0.9 }    // Purple
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+
+    // Particles — fewer but more impactful
+    const N = 100;
+    const pos = new Float32Array(N * 3);
+    const col = new Float32Array(N * 3);
+
+    const palette = [
+        [0.39, 0.40, 0.95],  // Indigo
+        [0.55, 0.36, 0.97],  // Violet
+        [0.02, 0.71, 0.83],  // Cyan
+        [0.23, 0.51, 0.96],  // Blue
+        [0.49, 0.24, 0.90],  // Purple
+        [0.96, 0.45, 0.09]   // Orange accent
     ];
-    
-    for (let i = 0; i < particleCount; i++) {
+
+    for (let i = 0; i < N; i++) {
         const i3 = i * 3;
-        
-        // Random position in sphere
         const theta = Math.random() * Math.PI * 2;
-        const phi = Math.acos((Math.random() * 2) - 1);
-        const radius = 3 + Math.random() * 10;
-        
-        positions[i3] = radius * Math.sin(phi) * Math.cos(theta);
-        positions[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
-        positions[i3 + 2] = radius * Math.cos(phi);
-        
-        // Random color from palette
-        const color = colorPalette[Math.floor(Math.random() * colorPalette.length)];
-        colors[i3] = color.r;
-        colors[i3 + 1] = color.g;
-        colors[i3 + 2] = color.b;
-        
-        sizes[i] = Math.random() * 3 + 1;
+        const phi = Math.acos(Math.random() * 2 - 1);
+        const r = 3 + Math.random() * 9;
+        pos[i3]     = r * Math.sin(phi) * Math.cos(theta);
+        pos[i3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+        pos[i3 + 2] = r * Math.cos(phi);
+        const c = palette[Math.floor(Math.random() * palette.length)];
+        col[i3] = c[0]; col[i3 + 1] = c[1]; col[i3 + 2] = c[2];
     }
-    
-    const particleGeometry = new THREE.BufferGeometry();
-    particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-    particleGeometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
-    
-    // Custom shader material for glow effect
-    const particleMaterial = new THREE.PointsMaterial({
-        size: 0.15,
+
+    const pGeo = new THREE.BufferGeometry();
+    pGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    pGeo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+
+    const pMat = new THREE.PointsMaterial({
+        size: 0.2,
         vertexColors: true,
         transparent: true,
         opacity: 0.8,
         blending: THREE.AdditiveBlending,
         sizeAttenuation: true
     });
-    
-    const particles = new THREE.Points(particleGeometry, particleMaterial);
+    const particles = new THREE.Points(pGeo, pMat);
     scene.add(particles);
-    
-    // Create connecting lines
-    const lineGroup = new THREE.Group();
-    const lineMaterial = new THREE.LineBasicMaterial({ 
-        color: 0x6366f1, 
-        transparent: true, 
-        opacity: 0.12 
-    });
-    
-    // Connect nearby particles with lines
-    for (let i = 0; i < particleCount; i++) {
-        for (let j = i + 1; j < particleCount; j++) {
-            const i3 = i * 3;
-            const j3 = j * 3;
-            
-            const dx = positions[i3] - positions[j3];
-            const dy = positions[i3 + 1] - positions[j3 + 1];
-            const dz = positions[i3 + 2] - positions[j3 + 2];
-            const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
-            
-            if (dist < 3) {
-                const lineGeometry = new THREE.BufferGeometry().setFromPoints([
-                    new THREE.Vector3(positions[i3], positions[i3 + 1], positions[i3 + 2]),
-                    new THREE.Vector3(positions[j3], positions[j3 + 1], positions[j3 + 2])
-                ]);
-                const line = new THREE.Line(lineGeometry, lineMaterial);
-                lineGroup.add(line);
+
+    // Lines — single merged BufferGeometry (huge perf win)
+    const lineVerts = [];
+    for (let i = 0; i < N; i++) {
+        for (let j = i + 1; j < N; j++) {
+            const i3 = i * 3, j3 = j * 3;
+            const dx = pos[i3]-pos[j3], dy = pos[i3+1]-pos[j3+1], dz = pos[i3+2]-pos[j3+2];
+            if (dx*dx + dy*dy + dz*dz < 9) {
+                lineVerts.push(pos[i3], pos[i3+1], pos[i3+2], pos[j3], pos[j3+1], pos[j3+2]);
             }
         }
     }
-    scene.add(lineGroup);
-    
+    const lGeo = new THREE.BufferGeometry();
+    lGeo.setAttribute('position', new THREE.Float32BufferAttribute(lineVerts, 3));
+    const lMat = new THREE.LineBasicMaterial({ color: 0x6366f1, transparent: true, opacity: 0.12 });
+    const lines = new THREE.LineSegments(lGeo, lMat);
+    scene.add(lines);
+
     camera.position.z = 12;
-    
+
     // Mouse interaction
-    let mouseX = 0, mouseY = 0;
-    let targetX = 0, targetY = 0;
-    
-    window.addEventListener('mousemove', (e) => {
-        mouseX = (e.clientX / window.innerWidth) * 2 - 1;
-        mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
-    });
-    
-    // Animation loop
+    let mx = 0, my = 0, tx = 0, ty = 0;
+    window.addEventListener('mousemove', e => {
+        mx = (e.clientX / window.innerWidth) * 2 - 1;
+        my = -(e.clientY / window.innerHeight) * 2 + 1;
+    }, { passive: true });
+
+    // Pause when not visible
+    let isVisible = true;
+    const obs = new IntersectionObserver(entries => {
+        isVisible = entries[0].isIntersecting;
+    }, { threshold: 0 });
+    obs.observe(document.querySelector('.hero-section'));
+
     const clock = new THREE.Clock();
-    
+
     function animate() {
         requestAnimationFrame(animate);
-        
-        const elapsedTime = clock.getElapsedTime();
-        
-        // Smooth mouse follow
-        targetX += (mouseX - targetX) * 0.02;
-        targetY += (mouseY - targetY) * 0.02;
-        
-        // Rotate particles
-        particles.rotation.y = elapsedTime * 0.05;
-        particles.rotation.x = elapsedTime * 0.03;
-        
-        // Mouse parallax
-        particles.rotation.y += targetX * 0.3;
-        particles.rotation.x += targetY * 0.3;
-        
-        lineGroup.rotation.y = elapsedTime * 0.03;
-        lineGroup.rotation.x = elapsedTime * 0.02;
-        lineGroup.rotation.y += targetX * 0.2;
-        lineGroup.rotation.x += targetY * 0.2;
-        
+        if (!isVisible) return;
+
+        const t = clock.getElapsedTime();
+        tx += (mx - tx) * 0.025;
+        ty += (my - ty) * 0.025;
+
+        const ry = t * 0.04 + tx * 0.3;
+        const rx = t * 0.025 + ty * 0.3;
+
+        particles.rotation.set(rx, ry, 0);
+        lines.rotation.set(rx * 0.85, ry * 0.85, 0);
+
         // Breathing animation
-        const scale = 1 + Math.sin(elapsedTime * 0.5) * 0.1;
-        particles.scale.set(scale, scale, scale);
-        
+        const s = 1 + Math.sin(t * 0.4) * 0.08;
+        particles.scale.setScalar(s);
+
         renderer.render(scene, camera);
     }
     animate();
-    
-    // Handle resize
+
+    // Debounced resize
+    let resizeTimer;
     window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-    });
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }, 150);
+    }, { passive: true });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Smooth Scroll for Anchor Links
+// Smooth Scroll
 // ═══════════════════════════════════════════════════════════════════════════
 function initSmoothScroll() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                gsap.to(window, {
-                    scrollTo: { y: target, offsetY: 100 },
-                    duration: 1.2,
-                    ease: "power3.inOut"
-                });
+            const el = document.querySelector(this.getAttribute('href'));
+            if (el) {
+                const y = el.getBoundingClientRect().top + window.pageYOffset - 100;
+                window.scrollTo({ top: y, behavior: 'smooth' });
             }
         });
     });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Magnetic Button Effect
+// Magnetic Buttons — snappy with elastic return
 // ═══════════════════════════════════════════════════════════════════════════
 function initMagneticButtons() {
-    const buttons = document.querySelectorAll('.btn');
-    
-    buttons.forEach(button => {
-        button.addEventListener('mousemove', (e) => {
-            const rect = button.getBoundingClientRect();
-            const x = e.clientX - rect.left - rect.width / 2;
-            const y = e.clientY - rect.top - rect.height / 2;
-            
-            gsap.to(button, {
+    document.querySelectorAll('.btn').forEach(btn => {
+        btn.addEventListener('mousemove', e => {
+            const r = btn.getBoundingClientRect();
+            const x = e.clientX - r.left - r.width / 2;
+            const y = e.clientY - r.top - r.height / 2;
+            gsap.to(btn, {
                 x: x * 0.2,
                 y: y * 0.2,
-                duration: 0.4,
-                ease: "power2.out"
+                duration: 0.3,
+                ease: "power2.out",
+                force3D: true
             });
         });
-        
-        button.addEventListener('mouseleave', () => {
-            gsap.to(button, {
+        btn.addEventListener('mouseleave', () => {
+            gsap.to(btn, {
                 x: 0,
                 y: 0,
-                duration: 0.6,
+                duration: 0.5,
                 ease: "elastic.out(1, 0.3)"
             });
         });
@@ -461,68 +445,93 @@ function initMagneticButtons() {
 // Parallax Effects
 // ═══════════════════════════════════════════════════════════════════════════
 function initParallaxEffects() {
-    // Hero content parallax
     gsap.to('.hero-content', {
-        yPercent: -30,
+        yPercent: -25,
         ease: "none",
+        force3D: true,
         scrollTrigger: {
             trigger: '.hero-section',
             start: "top top",
             end: "bottom top",
-            scrub: 1
+            scrub: 0.8
         }
     });
-    
-    // Project images parallax
+
     gsap.utils.toArray('.project-img img').forEach(img => {
         gsap.to(img, {
-            yPercent: -15,
+            yPercent: -12,
             ease: "none",
+            force3D: true,
             scrollTrigger: {
                 trigger: img.closest('.project-card'),
                 start: "top bottom",
                 end: "bottom top",
-                scrub: 1
+                scrub: 0.8
             }
         });
     });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Text Reveal Animation (Split Text Effect)
+// Text Reveal — shimmer effects on interactive elements
 // ═══════════════════════════════════════════════════════════════════════════
 function initTextReveal() {
-    // Add letter-by-letter animation to hero title on hover
     const heroTitle = document.querySelector('.hero-title');
     if (heroTitle) {
         heroTitle.addEventListener('mouseenter', () => {
-            gsap.fromTo(heroTitle, 
+            gsap.fromTo(heroTitle,
                 { backgroundPosition: "0% 50%" },
-                { 
-                    backgroundPosition: "100% 50%",
-                    duration: 1,
-                    ease: "power2.inOut"
-                }
+                { backgroundPosition: "100% 50%", duration: 1, ease: "power2.inOut" }
             );
         });
     }
-    
-    // Add shine effect on tags
+
+    // Shimmer on tags
     document.querySelectorAll('.tag').forEach(tag => {
         tag.addEventListener('mouseenter', () => {
             gsap.fromTo(tag,
-                { boxShadow: "inset 0 0 0 rgba(102, 126, 234, 0)" },
-                { 
-                    boxShadow: "inset 0 0 20px rgba(102, 126, 234, 0.3)",
-                    duration: 0.3
-                }
+                { boxShadow: "inset 0 0 0 rgba(99,102,241,0)" },
+                { boxShadow: "inset 0 0 20px rgba(99,102,241,0.3)", duration: 0.3 }
             );
         });
-        
         tag.addEventListener('mouseleave', () => {
             gsap.to(tag, {
-                boxShadow: "inset 0 0 0 rgba(102, 126, 234, 0)",
+                boxShadow: "inset 0 0 0 rgba(99,102,241,0)",
                 duration: 0.3
+            });
+        });
+    });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Card Tilt — 3D perspective tilt on hover (bento + project cards)
+// ═══════════════════════════════════════════════════════════════════════════
+function initCardTilt() {
+    if (!window.matchMedia("(pointer: fine)").matches) return;
+
+    document.querySelectorAll('.bento-card, .project-card').forEach(card => {
+        card.style.transformStyle = 'preserve-3d';
+
+        card.addEventListener('mousemove', e => {
+            const rect = card.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width - 0.5;
+            const y = (e.clientY - rect.top) / rect.height - 0.5;
+
+            gsap.to(card, {
+                rotateY: x * 8,
+                rotateX: -y * 8,
+                duration: 0.4,
+                ease: "power2.out",
+                force3D: true
+            });
+        });
+
+        card.addEventListener('mouseleave', () => {
+            gsap.to(card, {
+                rotateY: 0,
+                rotateX: 0,
+                duration: 0.6,
+                ease: "elastic.out(1, 0.5)"
             });
         });
     });
