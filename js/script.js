@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════════
-// PREMIUM PORTFOLIO — Advanced Animations & Effects
+// PREMIUM PORTFOLIO — Advanced Animations & Effects (Performance Optimized)
 // Features: GSAP ScrollTrigger, Three.js Particle Network, Cursor Glow,
 //           Magnetic Buttons, Smooth Page Transitions
 // ═══════════════════════════════════════════════════════════════════════════
@@ -41,7 +41,7 @@ function initPageLoader() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Cursor Glow Effect (Desktop Only)
+// Cursor Glow Effect (Desktop Only) — GPU-accelerated with transform
 // ═══════════════════════════════════════════════════════════════════════════
 function initCursorGlow() {
     if (window.matchMedia("(pointer: fine)").matches) {
@@ -60,8 +60,8 @@ function initCursorGlow() {
         function animateCursor() {
             currentX += (mouseX - currentX) * 0.08;
             currentY += (mouseY - currentY) * 0.08;
-            cursorGlow.style.left = currentX + 'px';
-            cursorGlow.style.top = currentY + 'px';
+            // Use transform instead of left/top to avoid layout thrashing
+            cursorGlow.style.transform = `translate3d(${currentX - 200}px, ${currentY - 200}px, 0)`;
             requestAnimationFrame(animateCursor);
         }
         animateCursor();
@@ -99,18 +99,10 @@ function initHeroAnimations() {
         yoyo: true,
         ease: "sine.inOut"
     });
-    
-    // Continuous gradient animation for hero background
-    gsap.to(".hero-section::before, .hero-section::after", {
-        rotation: 360,
-        duration: 60,
-        repeat: -1,
-        ease: "none"
-    });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Scroll-Triggered Animations
+// Scroll-Triggered Animations — Throttled scroll handler
 // ═══════════════════════════════════════════════════════════════════════════
 function initScrollAnimations() {
     // Fade up animations for all reveal elements
@@ -228,33 +220,40 @@ function initScrollAnimations() {
         );
     });
     
-    // Navbar hide/show on scroll
+    // Navbar hide/show on scroll — throttled with rAF
     let lastScroll = 0;
+    let ticking = false;
     const navbar = document.querySelector('.navbar');
     
     window.addEventListener('scroll', () => {
-        const currentScroll = window.pageYOffset;
-        
-        if (currentScroll > 100) {
-            navbar.style.background = 'rgba(10, 10, 15, 0.9)';
-            navbar.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.3)';
-        } else {
-            navbar.style.background = 'rgba(255, 255, 255, 0.03)';
-            navbar.style.boxShadow = 'none';
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                const currentScroll = window.pageYOffset;
+                
+                if (currentScroll > 100) {
+                    navbar.style.background = 'rgba(10, 10, 15, 0.9)';
+                    navbar.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.3)';
+                } else {
+                    navbar.style.background = 'rgba(255, 255, 255, 0.03)';
+                    navbar.style.boxShadow = 'none';
+                }
+                
+                if (currentScroll > lastScroll && currentScroll > 500) {
+                    gsap.to(navbar, { y: -100, duration: 0.3, overwrite: true });
+                } else {
+                    gsap.to(navbar, { y: 0, duration: 0.3, overwrite: true });
+                }
+                
+                lastScroll = currentScroll;
+                ticking = false;
+            });
+            ticking = true;
         }
-        
-        if (currentScroll > lastScroll && currentScroll > 500) {
-            gsap.to(navbar, { y: -100, duration: 0.3 });
-        } else {
-            gsap.to(navbar, { y: 0, duration: 0.3 });
-        }
-        
-        lastScroll = currentScroll;
-    });
+    }, { passive: true });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Three.js Particle Network Background
+// Three.js Particle Network — Visibility-gated, merged geometry
 // ═══════════════════════════════════════════════════════════════════════════
 function initThreeJS() {
     const container = document.getElementById('canvas-container');
@@ -265,14 +264,15 @@ function initThreeJS() {
     const renderer = new THREE.WebGLRenderer({ 
         canvas: container, 
         alpha: true, 
-        antialias: true 
+        antialias: false,       // Disable AA for performance
+        powerPreference: 'low-power'
     });
     
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); // Cap at 1.5x instead of 2x
     
-    // Create particle system
-    const particleCount = 150;
+    // Reduce particle count for better performance
+    const particleCount = 100;
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
     const sizes = new Float32Array(particleCount);
@@ -324,15 +324,8 @@ function initThreeJS() {
     const particles = new THREE.Points(particleGeometry, particleMaterial);
     scene.add(particles);
     
-    // Create connecting lines
-    const lineGroup = new THREE.Group();
-    const lineMaterial = new THREE.LineBasicMaterial({ 
-        color: 0x6366f1, 
-        transparent: true, 
-        opacity: 0.12 
-    });
-    
-    // Connect nearby particles with lines
+    // Create connecting lines — single merged geometry instead of per-line objects
+    const lineVertices = [];
     for (let i = 0; i < particleCount; i++) {
         for (let j = i + 1; j < particleCount; j++) {
             const i3 = i * 3;
@@ -344,16 +337,23 @@ function initThreeJS() {
             const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
             
             if (dist < 3) {
-                const lineGeometry = new THREE.BufferGeometry().setFromPoints([
-                    new THREE.Vector3(positions[i3], positions[i3 + 1], positions[i3 + 2]),
-                    new THREE.Vector3(positions[j3], positions[j3 + 1], positions[j3 + 2])
-                ]);
-                const line = new THREE.Line(lineGeometry, lineMaterial);
-                lineGroup.add(line);
+                lineVertices.push(
+                    positions[i3], positions[i3 + 1], positions[i3 + 2],
+                    positions[j3], positions[j3 + 1], positions[j3 + 2]
+                );
             }
         }
     }
-    scene.add(lineGroup);
+    
+    const lineGeometry = new THREE.BufferGeometry();
+    lineGeometry.setAttribute('position', new THREE.Float32BufferAttribute(lineVertices, 3));
+    const lineMaterial = new THREE.LineBasicMaterial({ 
+        color: 0x6366f1, 
+        transparent: true, 
+        opacity: 0.12 
+    });
+    const lineSegments = new THREE.LineSegments(lineGeometry, lineMaterial);
+    scene.add(lineSegments);
     
     camera.position.z = 12;
     
@@ -364,13 +364,33 @@ function initThreeJS() {
     window.addEventListener('mousemove', (e) => {
         mouseX = (e.clientX / window.innerWidth) * 2 - 1;
         mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
-    });
+    }, { passive: true });
     
-    // Animation loop
+    // Visibility-gated animation loop — pause when off-screen
     const clock = new THREE.Clock();
+    let isVisible = true;
+    let animationId = null;
+    
+    const observer = new IntersectionObserver((entries) => {
+        isVisible = entries[0].isIntersecting;
+        if (isVisible && !animationId) {
+            clock.start();
+            animate();
+        } else if (!isVisible && animationId) {
+            cancelAnimationFrame(animationId);
+            animationId = null;
+            clock.stop();
+        }
+    }, { threshold: 0.05 });
+    
+    observer.observe(container.closest('.hero-section') || container);
     
     function animate() {
-        requestAnimationFrame(animate);
+        if (!isVisible) {
+            animationId = null;
+            return;
+        }
+        animationId = requestAnimationFrame(animate);
         
         const elapsedTime = clock.getElapsedTime();
         
@@ -386,10 +406,10 @@ function initThreeJS() {
         particles.rotation.y += targetX * 0.3;
         particles.rotation.x += targetY * 0.3;
         
-        lineGroup.rotation.y = elapsedTime * 0.03;
-        lineGroup.rotation.x = elapsedTime * 0.02;
-        lineGroup.rotation.y += targetX * 0.2;
-        lineGroup.rotation.x += targetY * 0.2;
+        lineSegments.rotation.y = elapsedTime * 0.03;
+        lineSegments.rotation.x = elapsedTime * 0.02;
+        lineSegments.rotation.y += targetX * 0.2;
+        lineSegments.rotation.x += targetY * 0.2;
         
         // Breathing animation
         const scale = 1 + Math.sin(elapsedTime * 0.5) * 0.1;
@@ -399,11 +419,15 @@ function initThreeJS() {
     }
     animate();
     
-    // Handle resize
+    // Handle resize — debounced
+    let resizeTimeout;
     window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }, 150);
     });
 }
 
@@ -427,23 +451,23 @@ function initSmoothScroll() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Magnetic Button Effect
+// Magnetic Button Effect — using gsap.quickTo for performance
 // ═══════════════════════════════════════════════════════════════════════════
 function initMagneticButtons() {
     const buttons = document.querySelectorAll('.btn');
     
     buttons.forEach(button => {
+        // Pre-create quickTo instances — reuses the same tween instead of creating new ones
+        const xTo = gsap.quickTo(button, "x", { duration: 0.4, ease: "power2.out" });
+        const yTo = gsap.quickTo(button, "y", { duration: 0.4, ease: "power2.out" });
+        
         button.addEventListener('mousemove', (e) => {
             const rect = button.getBoundingClientRect();
             const x = e.clientX - rect.left - rect.width / 2;
             const y = e.clientY - rect.top - rect.height / 2;
             
-            gsap.to(button, {
-                x: x * 0.2,
-                y: y * 0.2,
-                duration: 0.4,
-                ease: "power2.out"
-            });
+            xTo(x * 0.2);
+            yTo(y * 0.2);
         });
         
         button.addEventListener('mouseleave', () => {
