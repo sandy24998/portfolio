@@ -191,18 +191,23 @@ DevOps Engineer with 5+ years of experience building scalable cloud and automati
             <div class="project-list">
                 <!-- P1 -->
                 <div class="project-card gs-reveal">
-                    <div class="project-img">
-                        <img src="images/eks_atlas.png" alt="EKS Atlas - AWS EKS Cluster Automation">
-                    </div>
                     <div class="project-content">
-                        <div class="project-cat">AWS EKS Cluster Automation</div>
-                        <h3 class="project-title">EKSAtlas</h3>
-                        <p class="project-desc">Automated provisioning of Amazon EKS clusters using modular Terraform
-                            IaC. Implemented remote state management using S3 and DynamoDB.</p>
-                        <div class="bento-tags">
+                        <div class="project-cat">Infrastructure as Code</div>
+                        <h3 class="project-title">AWS Infrastructure Automation Platform</h3>
+                        <p class="project-desc" style="font-size:0.95rem; margin-bottom:1.2rem; color:var(--c-text-sec);">
+                            <strong>Tech:</strong> AWS, Terraform, Kubernetes, Amazon EKS
+                        </p>
+                        <ul class="project-details" style="margin:0; padding-left:1.5rem; font-size:0.95rem; line-height:1.7;">
+                            <li>Built a production-style IaC platform using Terraform to automate provisioning of Amazon EKS clusters, VPC networking, and compute resources through reusable, modular Terraform components.</li>
+                            <li>Configured remote Terraform state with S3 and DynamoDB locking to support safe concurrent deployments across multiple environments.</li>
+                            <li>Leveraged Terraform variables, workspaces, and environment-specific configurations to enable scalable multi-environment deployments with minimal code duplication.</li>
+                            <li>Automated Kubernetes cluster setup, node group provisioning, and infrastructure lifecycle management, reducing manual configuration effort and improving deployment reliability.</li>
+                        </ul>
+                        <div class="bento-tags" style="margin-top:1.5rem;">
                             <span class="tag">AWS</span>
                             <span class="tag">Terraform</span>
                             <span class="tag">Kubernetes</span>
+                            <span class="tag">Amazon EKS</span>
                         </div>
                     </div>
                 </div>
@@ -210,35 +215,23 @@ DevOps Engineer with 5+ years of experience building scalable cloud and automati
                 <!-- P2 -->
                 <div class="project-card gs-reveal">
                     <div class="project-content">
-                        <div class="project-cat">AWS Infrastructure Automation</div>
-                        <h3 class="project-title">CloudSculptor</h3>
-                        <p class="project-desc">Developed reusable Terraform modules for AWS networking and compute
-                            resources. Supported multi-environment deployments using variables and workspaces.</p>
-                        <div class="bento-tags">
-                            <span class="tag">Modules</span>
-                            <span class="tag">IaC</span>
-                            <span class="tag">AutoScaling</span>
-                        </div>
-                    </div>
-                    <div class="project-img">
-                        <img src="images/cloud_sculptor.png" alt="CloudSculptor - AWS Infrastructure Automation">
-                    </div>
-                </div>
-
-                <!-- P3 -->
-                <div class="project-card gs-reveal">
-                    <div class="project-img">
-                        <img src="images/cicd_pipeline.png" alt="K8s Pipeline - End-to-End Kubernetes CI/CD">
-                    </div>
-                    <div class="project-content">
-                        <div class="project-cat">End-to-End Kubernetes CI/CD</div>
-                        <h3 class="project-title">K8s Pipeline</h3>
-                        <p class="project-desc">Built CI/CD pipelines for Kubernetes workloads with automated build,
-                            test, security scanning, and deployment.</p>
-                        <div class="bento-tags">
+                        <div class="project-cat">CI/CD & Automation</div>
+                        <h3 class="project-title">Multi-Environment CI/CD Pipeline</h3>
+                        <p class="project-desc" style="font-size:0.95rem; margin-bottom:1.2rem; color:var(--c-text-sec);">
+                            <strong>Tech:</strong> Jenkins, Kubernetes, Docker, GitHub
+                        </p>
+                        <ul class="project-details" style="margin:0; padding-left:1.5rem; font-size:0.95rem; line-height:1.7;">
+                            <li>Built an end-to-end CI/CD pipeline using Jenkins, Docker, and Kubernetes, automating application builds, test execution, image publishing, and environment deployments.</li>
+                            <li>Implemented a Build Once, Deploy Many strategy using versioned Docker images promoted as immutable artifacts across DEV, QA, UAT, and production.</li>
+                            <li>Developed Jenkins Pipeline-as-Code with manual approval gates for QA, UAT, and production releases, enabling controlled, auditable promotions.</li>
+                            <li>Automated Kubernetes rolling deployments with readiness checks, rollout validation, and environment-specific namespace isolation.</li>
+                            <li>Implemented dynamic image tagging using build numbers, Git commit hashes, and semantic versioning for full release traceability.</li>
+                        </ul>
+                        <div class="bento-tags" style="margin-top:1.5rem;">
                             <span class="tag">Jenkins</span>
+                            <span class="tag">Kubernetes</span>
                             <span class="tag">Docker</span>
-                            <span class="tag">Helm</span>
+                            <span class="tag">GitHub</span>
                         </div>
                     </div>
                 </div>
