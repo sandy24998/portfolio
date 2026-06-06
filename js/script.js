@@ -4,19 +4,40 @@
 //           Magnetic Buttons, Smooth Page Transitions
 // ═══════════════════════════════════════════════════════════════════════════
 
+// Performance flags
+const isMobile = /iPhone|iPad|iPod|Android|webOS/i.test(navigator.userAgent);
+const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const hasLowPowerMode = navigator.deviceMemory && navigator.deviceMemory <= 4;
+const shouldSkipHeavyAnimations = isMobile || prefersReducedMotion || hasLowPowerMode;
+
 document.addEventListener("DOMContentLoaded", () => {
     // Register GSAP Plugins
     gsap.registerPlugin(ScrollTrigger);
     
+    // Disable animations globally if user prefers reduced motion
+    if (prefersReducedMotion) {
+        gsap.globalTimeline.timeScale(0.5);
+    }
+    
     // Initialize all effects
     initPageLoader();
-    initCursorGlow();
+    
+    // Skip heavy animations on low-power devices
+    if (!shouldSkipHeavyAnimations) {
+        initCursorGlow();
+        initThreeJS();
+    }
+    
     initHeroAnimations();
     initScrollAnimations();
-    initThreeJS();
     initSmoothScroll();
-    initMagneticButtons();
-    initParallaxEffects();
+    
+    // Only init magnetic buttons on desktop
+    if (!isMobile) {
+        initMagneticButtons();
+        initParallaxEffects();
+    }
+    
     initTextReveal();
 });
 
@@ -105,26 +126,30 @@ function initHeroAnimations() {
 // Scroll-Triggered Animations — Throttled scroll handler
 // ═══════════════════════════════════════════════════════════════════════════
 function initScrollAnimations() {
+    // Reduce animation complexity on mobile/low-power devices
+    const duration = shouldSkipHeavyAnimations ? 0.5 : 1;
+    const staggerDelay = shouldSkipHeavyAnimations ? 0 : 0.05;
+    
     // Fade up animations for all reveal elements
     gsap.utils.toArray('.gs-reveal').forEach((elem, index) => {
         gsap.fromTo(elem, 
             { 
-                y: 60, 
+                y: shouldSkipHeavyAnimations ? 20 : 60, 
                 opacity: 0,
-                scale: 0.95
+                scale: shouldSkipHeavyAnimations ? 1 : 0.95
             },
             {
                 y: 0,
                 opacity: 1,
                 scale: 1,
-                duration: 1,
+                duration: duration,
                 ease: "power3.out",
                 scrollTrigger: {
                     trigger: elem,
                     start: "top 88%",
                     toggleActions: "play none none none"
                 },
-                delay: index * 0.05
+                delay: index * staggerDelay
             }
         );
     });
@@ -133,39 +158,39 @@ function initScrollAnimations() {
     gsap.utils.toArray('.bento-card').forEach((card, index) => {
         gsap.fromTo(card,
             { 
-                y: 80, 
+                y: shouldSkipHeavyAnimations ? 20 : 80, 
                 opacity: 0, 
-                rotateX: -15 
+                rotateX: shouldSkipHeavyAnimations ? 0 : -15 
             },
             {
                 y: 0,
                 opacity: 1,
                 rotateX: 0,
-                duration: 0.8,
+                duration: shouldSkipHeavyAnimations ? 0.4 : 0.8,
                 ease: "back.out(1.2)",
                 scrollTrigger: {
                     trigger: card,
                     start: "top 90%"
                 },
-                delay: index * 0.1
+                delay: index * (shouldSkipHeavyAnimations ? 0 : 0.1)
             }
         );
     });
     
     // Project cards slide in
     gsap.utils.toArray('.project-card').forEach((card, index) => {
-        const direction = index % 2 === 0 ? -100 : 100;
+        const direction = shouldSkipHeavyAnimations ? 0 : (index % 2 === 0 ? -100 : 100);
         gsap.fromTo(card,
             { 
                 x: direction, 
                 opacity: 0,
-                scale: 0.9
+                scale: shouldSkipHeavyAnimations ? 1 : 0.9
             },
             {
                 x: 0,
                 opacity: 1,
                 scale: 1,
-                duration: 1.2,
+                duration: shouldSkipHeavyAnimations ? 0.5 : 1.2,
                 ease: "power3.out",
                 scrollTrigger: {
                     trigger: card,
@@ -179,45 +204,50 @@ function initScrollAnimations() {
     gsap.utils.toArray('.job-item').forEach((item, index) => {
         gsap.fromTo(item,
             { 
-                y: 60, 
+                y: shouldSkipHeavyAnimations ? 10 : 60, 
                 opacity: 0,
-                x: -30
+                x: shouldSkipHeavyAnimations ? 0 : -30
             },
             {
                 y: 0,
                 opacity: 1,
                 x: 0,
-                duration: 0.9,
+                duration: shouldSkipHeavyAnimations ? 0.4 : 0.9,
                 ease: "power2.out",
                 scrollTrigger: {
                     trigger: item,
                     start: "top 85%"
                 },
-                delay: index * 0.15
+                delay: index * (shouldSkipHeavyAnimations ? 0 : 0.15)
             }
         );
     });
     
     // Section titles animation
     gsap.utils.toArray('.section-title, .sticky-title').forEach(title => {
-        gsap.fromTo(title,
-            { 
-                y: 100, 
-                opacity: 0,
-                clipPath: "polygon(0 100%, 100% 100%, 100% 100%, 0 100%)"
-            },
-            {
-                y: 0,
-                opacity: 1,
-                clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
-                duration: 1.2,
-                ease: "power4.out",
-                scrollTrigger: {
-                    trigger: title,
-                    start: "top 85%"
+        if (prefersReducedMotion) {
+            // No animation for reduced motion
+            gsap.set(title, { y: 0, opacity: 1, clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)" });
+        } else {
+            gsap.fromTo(title,
+                { 
+                    y: 100, 
+                    opacity: 0,
+                    clipPath: "polygon(0 100%, 100% 100%, 100% 100%, 0 100%)"
+                },
+                {
+                    y: 0,
+                    opacity: 1,
+                    clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
+                    duration: 1.2,
+                    ease: "power4.out",
+                    scrollTrigger: {
+                        trigger: title,
+                        start: "top 85%"
+                    }
                 }
-            }
-        );
+            );
+        }
     });
     
     // Navbar hide/show on scroll — throttled with rAF

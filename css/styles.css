@@ -189,6 +189,7 @@ h6 {
 .section {
     padding: 140px 0;
     position: relative;
+    contain: layout style paint;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -211,6 +212,7 @@ h6 {
     box-shadow: var(--shadow-sm);
     transition: all 0.4s var(--ease-smooth);
     will-change: transform;
+    contain: layout style;
 }
 
 .navbar:hover {
@@ -476,6 +478,8 @@ h6 {
     position: relative;
     overflow: hidden;
     box-shadow: var(--shadow-sm);
+    will-change: transform, box-shadow;
+    contain: layout style;
 }
 
 .bento-card::before {
@@ -976,4 +980,24 @@ h6 {
 /* Footer */
 footer {
     background: var(--c-bg-alt);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Accessibility: Reduced Motion
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    
+    .bento-card,
+    .project-card,
+    .job-item {
+        will-change: auto;
+    }
 }
